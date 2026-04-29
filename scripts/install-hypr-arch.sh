@@ -1,5 +1,6 @@
 #! bin/bash
 
+## run curl -fsSL https://github.com/Lonzago/gondev-dotfiles/blob/main/scripts/install-hypr-arch.sh | bash
 
 echo -e "\n\t=== === === === === === === === === === ==="
 echo -e "\t===   DotFiles Gondev 0.01 Arch Linux   ==="
