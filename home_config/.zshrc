@@ -1,5 +1,6 @@
 ## INITIALIZATION 
 
+##Init starship
 if [[ $- == *i* ]] && [[ ${TERM:-} != "dumb" ]] && command -v starship &> /dev/null; then
   eval "$(starship init zsh)"
 fi
@@ -16,28 +17,26 @@ if command -v try &> /dev/null; then
   }
 fi
 
-# if command -v fzf &> /dev/null; then
-#   if [[ -f /usr/share/fzf/completion.bash ]]; then
-#     source /usr/share/fzf/completion.bash
-#   fi
-#   if [[ -f /usr/share/fzf/key-bindings.bash ]]; then
-#     source /usr/share/fzf/key-bindings.bash
-#   fi
-# fi
+export ZSH="$HOME/.oh-my-zsh"
 
-## PLGUINS
+## PLUGINS
 # If you come from bash you might have to change your $PATH.
-# export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
-plugins=(git)
+export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
+plugins=(
+  git
+  zsh-autosuggestions
+  zsh-syntax-highlighting
+)
 
 
-## USER CONFIG
-# Preferred editor for local and remote sessions
-# if [[ -n $SSH_CONNECTION ]]; then
-#   export EDITOR='vim'
-# else
-#   export EDITOR='nvim'
-# fi
+## Vim editing for editor
+set -o vi
+
+export VISUAL="nvim"
+export EDITOR="nvim"
+export BROWSER="firefox"
+
+CASE_SENSITIVE=false
 
 # Compilation flags
 # export ARCHFLAGS="-arch $(uname -m)"
@@ -51,7 +50,7 @@ if command -v eza &> /dev/null; then
   alias lta='lt -a'
 fi
 
-if [[ "$TERM" == "xterm-kitty" ]]; then
+  if [[ "$TERM" == "xterm-kitty" ]]; then
   alias ff="fzf --preview 'case \$(file --mime-type -b {}) in image/*) kitty icat --clear --transfer-mode=memory --stdin=no --place=\${FZF_PREVIEW_COLUMNS}x\${FZF_PREVIEW_LINES}@0x0 {} ;; *) bat --style=numbers --color=always {} ;; esac'"
 else
   alias ff="fzf --preview 'bat --style=numbers --color=always {}'"
@@ -92,7 +91,7 @@ open() (
   xdg-open "$@" >/dev/null 2>&1 &
 )
 
-alias zshconfig="nvim ~/.zshrc"
+alias zshconf="nvim ~/.zshrc"
 alias py="python"
 
 alias lg="lazygit"
@@ -106,11 +105,10 @@ alias tsc="sudo timeshift --create"
 alias ..='cd ..'
 alias ...='cd ../..'
 alias ....='cd ../../..'
-alias dhome='cd ~'
-alias droot='cd /'
+alias home='cd ~'
+alias root='cd /'
 
 # Tools
-alias py='python'
 alias v='nvim'
 
 
@@ -132,6 +130,6 @@ alias gcad='git commit -a --amend'
 # Example aliases
 alias cl="clear"
 
-
+source ~/.oh-my-zsh/oh-my-zsh.sh
 
 
