@@ -40,16 +40,9 @@ CASE_SENSITIVE=false
 
 # Compilation flags
 # export ARCHFLAGS="-arch $(uname -m)"
+
+
 # For a full list of active aliases, run `alias`.
-
-# File system
-if command -v eza &> /dev/null; then
-  alias ls='eza -lh --group-directories-first --icons=auto'
-  alias lsa='ls -a'
-  alias lt='eza --tree --level=2 --long --icons --git'
-  alias lta='lt -a'
-fi
-
   if [[ "$TERM" == "xterm-kitty" ]]; then
   alias ff="fzf --preview 'case \$(file --mime-type -b {}) in image/*) kitty icat --clear --transfer-mode=memory --stdin=no --place=\${FZF_PREVIEW_COLUMNS}x\${FZF_PREVIEW_LINES}@0x0 {} ;; *) bat --style=numbers --color=always {} ;; esac'"
 else
@@ -131,5 +124,14 @@ alias gcad='git commit -a --amend'
 alias cl="clear"
 
 source ~/.oh-my-zsh/oh-my-zsh.sh
+
+# File system
+if command -v eza &> /dev/null; then
+  alias ls='eza -lh --group-directories-first --icons=auto'
+  alias lsa='ls -a'
+  alias lt='eza --tree --level=2 --long --icons --git'
+  alias lta='lt -a'
+fi
+
 
 
