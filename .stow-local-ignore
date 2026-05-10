@@ -16,6 +16,10 @@ _darcs
 \.gitignore
 \.gitmodules
 
+
+\scripts
+\keyboard
+
 .+~          # emacs backup files
 \#.*\#       # emacs autosave files
 
