@@ -1,0 +1,1 @@
+/home/gondev/.config/omarchy/current/theme/neovim.lua
