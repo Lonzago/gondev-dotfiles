@@ -93,7 +93,7 @@ alias ld="lazydocker"
 
 alias ts="sudo timeshift"
 alias tsc="sudo timeshift --create"
-
+alias tscd="sudo timeshift --create --comment 'Daily' --tags D "
 # Directories
 alias ..='cd ..'
 alias ...='cd ../..'
