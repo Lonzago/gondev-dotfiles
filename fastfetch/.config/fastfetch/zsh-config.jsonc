@@ -1,0 +1,21 @@
+{
+  "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
+  "logo": {
+    "type": "kitty",
+    "source": "/home/gondev/gondev-dotfiles/fastfetch/.config/fastfetch/assets/cute-capybara-drinking-bubble-tea-sticker.png",
+    "width": 7,
+    "height": 4,
+    "padding": {
+      "top": 2,
+      "left": 2,
+      "right": 0
+    }
+  },
+  "modules":[
+    {
+      "type": "command",
+      "key": "",
+      "text": "kitty icat --use-window-size 600,50,700,100 ~/Downloads/gondev_rendered_ascii.png"
+    }
+  ]
+}
