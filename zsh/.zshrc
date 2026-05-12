@@ -3,8 +3,6 @@
 kitty icat --use-window-size 100,100,100,100 ~/.config/fastfetch/assets/cute-capybara-drinking-bubble-tea-sticker.png 
 
 
-
-
 #Init starship
 if [[ $- == *i* ]] && [[ ${TERM:-} != "dumb" ]] && command -v starship &> /dev/null; then
   eval "$(starship init zsh)"
@@ -32,7 +30,6 @@ plugins=(
   zsh-autosuggestions
   zsh-syntax-highlighting
 )
-
 
 ## Vim editing for editor
 set -o vi
@@ -107,8 +104,6 @@ alias home='cd ~'
 alias root='cd /'
 
 # Tools
-alias v='nvim'
-
 
 alias oc='opencode'
 alias cx='printf "\033[2J\033[3J\033[H" && claude --permission-mode bypassPermissions'
