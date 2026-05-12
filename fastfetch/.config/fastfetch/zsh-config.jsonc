@@ -12,10 +12,6 @@
     }
   },
   "modules":[
-    {
-      "type": "command",
-      "key": "",
-      "text": "kitty icat --use-window-size 600,50,700,100 ~/Downloads/gondev_rendered_ascii.png"
-    }
+    "break",
   ]
 }
