@@ -31,8 +31,4 @@ makepkg -si
 
 # Install AUR packages
 yay -S swww waypaper
-# Install oh-my-zsh and plugins
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 
-echo -e "\n\tCambiando la shell basica por zsh"
-chsh -s $(which zsh)
