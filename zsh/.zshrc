@@ -1,6 +1,8 @@
 ## INITIALIZATION 
 
-kitty icat --use-window-size 100,100,100,100 ~/.config/fastfetch/assets/cute-capybara-drinking-bubble-tea-sticker.png 
+STICKERS_DIR="$HOME/gondev-dotfiles/fastfetch/.config/fastfetch/assets"
+RANDOM_IMG="$(find "$STICKERS_DIR" | shuf -n1)"
+kitty icat --use-window-size 100,100,100,100 "$RANDOM_IMG"
 
 
 #Init starship
