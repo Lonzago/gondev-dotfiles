@@ -1,6 +1,6 @@
 ## INITIALIZATION 
-kitty icat --align left --use-window-size $COLUMNS,$LINES,100,50 ~/.config/fastfetch/assets/cute-capybara-drinking-bubble-tea-sticker.png ~/Downloads/Laptop-anosthic.gif
 
+kitty icat --use-window-size 100,100,100,100 ~/.config/fastfetch/assets/cute-capybara-drinking-bubble-tea-sticker.png 
 
 
 
