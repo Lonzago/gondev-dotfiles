@@ -1,6 +1,11 @@
 ## INITIALIZATION 
+kitty icat --align left --use-window-size $COLUMNS,$LINES,100,50 ~/.config/fastfetch/assets/cute-capybara-drinking-bubble-tea-sticker.png ~/Downloads/Laptop-anosthic.gif
 
-##Init starship
+
+
+
+
+#Init starship
 if [[ $- == *i* ]] && [[ ${TERM:-} != "dumb" ]] && command -v starship &> /dev/null; then
   eval "$(starship init zsh)"
 fi
