@@ -1,9 +1,13 @@
 ## INITIALIZATION 
 
-STICKERS_DIR="$HOME/gondev-dotfiles/fastfetch/.config/fastfetch/assets"
-RANDOM_IMG="$(find "$STICKERS_DIR" | shuf -n1)"
-kitty icat --use-window-size 100,100,100,100 "$RANDOM_IMG"
-
+#TODO moce this to a script or other file
+display_sticker()(
+  STICKERS_DIR="$HOME/gondev-dotfiles/fastfetch/.config/fastfetch/assets"
+  RANDOM_IMG="$(find "$STICKERS_DIR" -type f | shuf -n1)"
+  ICON_SIZE=80
+  kitty icat --use-window-size $ICON_SIZE,$ICON_SIZE,$ICON_SIZE,$ICON_SIZE "$RANDOM_IMG"
+)
+display_sticker
 
 #Init starship
 if [[ $- == *i* ]] && [[ ${TERM:-} != "dumb" ]] && command -v starship &> /dev/null; then
@@ -123,7 +127,7 @@ alias gcam='git commit -a -m'
 alias gcad='git commit -a --amend'
 
 # Example aliases
-alias cl="clear"
+alias cl="clear && display_sticker"
 
 source ~/.oh-my-zsh/oh-my-zsh.sh
 
