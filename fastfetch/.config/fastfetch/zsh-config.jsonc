@@ -3,15 +3,13 @@
   "logo": {
     "type": "kitty",
     "source": "/home/gondev/gondev-dotfiles/fastfetch/.config/fastfetch/assets/cute-capybara-drinking-bubble-tea-sticker.png",
-    "width": 7,
-    "height": 4,
+    "width": 11,
+    "height": 5,
     "padding": {
-      "top": 2,
-      "left": 2,
+      "top": 0,
+      "left": 0,
       "right": 0
     }
   },
-  "modules":[
-    "break",
-  ]
+  "modules":[]
 }

@@ -1,12 +1,21 @@
 ## INITIALIZATION 
 
 #TODO moce this to a script or other file
-display_sticker()(
+display_sticker(){
   STICKERS_DIR="$HOME/gondev-dotfiles/fastfetch/.config/fastfetch/assets"
   RANDOM_IMG="$(find "$STICKERS_DIR" -type f | shuf -n1)"
-  ICON_SIZE=80
-  kitty icat --use-window-size $ICON_SIZE,$ICON_SIZE,$ICON_SIZE,$ICON_SIZE "$RANDOM_IMG"
-)
+  ICON_SIZE=150
+  EXT="${RANDOM_IMG##*.}"
+  if [[ "$EXT" == "gif" ]]; then
+    # kitty icat --place ${ICON_SIZE}x${ICON_SIZE}@0x0 "$RANDOM_IMG"
+    # echo "This is a gif"
+    kitty icat --use-window-size $ICON_SIZE,$ICON_SIZE,$ICON_SIZE,$ICON_SIZE "$RANDOM_IMG"
+  else
+    # echo "NOT a gif $RANDOM_IMG"
+    fastfetch  --logo "$RANDOM_IMG" -c /home/gondev/gondev-dotfiles/fastfetch/.config/fastfetch/zsh-config.jsonc
+  fi
+}
+
 display_sticker
 
 #Init starship
