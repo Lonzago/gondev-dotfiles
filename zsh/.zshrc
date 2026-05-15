@@ -44,6 +44,7 @@ plugins=(
   git
   zsh-autosuggestions
   zsh-syntax-highlighting
+  zoxide
 )
 
 ## Vim editing for editor
