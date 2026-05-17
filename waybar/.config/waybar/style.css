@@ -121,8 +121,13 @@ tooltip {
 
 /* --- Gruvebox-Colors-Module --- */
 #window {
-    background-color: #eadbb2;
-    color: #282828;
+    /* background-color: #eadbb2; */
+    background-color: transparent;
+    /* color: #282828; */
+    color: #eadbb2;
+ 
+    border: 2px solid alpha(@foreground, 0.8);
+    border-radius:15px
 }
 
 #custom-omarchy {

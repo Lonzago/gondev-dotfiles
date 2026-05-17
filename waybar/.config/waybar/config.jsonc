@@ -16,21 +16,21 @@
       "custom/voxtype",
       "custom/weather",
       "idle_inhibitor",
-      "hyprland/workspaces",
       "custom/screenrecording-indicator",
       "custom/updatespacman",
       "custom/update",
       "mpris"
     ],
-  "modules-center": ["hyprland/window"],
+  "modules-center": [
+    "hyprland/workspaces",
+    "hyprland/window",
+  ],
   "modules-right": [
-    "tray",
-    "backlight",
     "bluetooth",
     "pulseaudio",
     "network",
-    "memory",
     "battery",
+    "memory",
     "cpu"    
   ],
   "hyprland/workspaces": {
@@ -94,6 +94,7 @@
       " - ": "", // if no window is focused, a single dash is displayed, this removes it
       "(.*?) - Chromium - chromium": "   $1 ",
       "(.*chrome)...(.*)": "   $1 ",
+      "(.*firefox)...(.*)": "   $1 ",
       "(.*) - Obsidian - .* - obsidian": "   $1 ",
       "(.*nvim)...(.*)": "   $2 ",
       "(.*code) - (.*)": " 󰨞  $1 ",
@@ -102,6 +103,7 @@
       "(.*) - Spotify": "  $1 ",
       "(.*) - com.mitchellh.ghostty": " 󰊠 $1 ",
       "(.*) - Alacritty": "   $1 ",
+      "(.*) - Kitty": "   $1 ",
       "(.*) - BeeperTexts": " 󰻞  $1 ",
       "(.*Discord)...(.*).. (.*)": "   $2 ",
       "(.*) - org.gnome.Nautilus": " 󰣆  $1 ",
