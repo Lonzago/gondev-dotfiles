@@ -1,5 +1,8 @@
 ## INITIALIZATION 
 
+eval "$(ssh-agent -s)"
+ssh-add ~/.ssh/gondev_gh
+
 #TODO moce this to a script or other file
 display_sticker(){
   STICKERS_DIR="$HOME/gondev-dotfiles/fastfetch/.config/fastfetch/assets"
