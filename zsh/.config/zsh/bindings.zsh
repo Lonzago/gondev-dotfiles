@@ -14,6 +14,9 @@ ZVM_VI_HIGHLIGHT_BACKGROUND=none
 ZVM_VI_HIGHLIGHT_FOREGROUND=none
 ZVM_VI_HIGHLIGHT_EXTRASTYLE=none
 
+# Ctrl+F -> fzf file picker (no hidden files) - bind immediately after fzf.zsh loads
+bindkey '^F' _fzf_file_no_hidden
+
 # Custom bindings that run after zsh-vi-mode initialization
 zvm_after_init() {
   # Ctrl+Right -> move forward one word
@@ -21,9 +24,6 @@ zvm_after_init() {
 
   # Ctrl+Left -> move backward one word
   bindkey '^[[1;5D' backward-word
-
-  # Ctrl+F -> fzf file picker (no hidden files)
-  bindkey '^F' _fzf_file_no_hidden
 
   # Ctrl+\ -> toggle autosuggestions (useful for screen recordings)
   bindkey '^\' autosuggest-toggle
