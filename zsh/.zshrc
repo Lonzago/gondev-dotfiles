@@ -48,6 +48,9 @@ plugins=(
   zsh-autosuggestions
   zsh-syntax-highlighting
   zoxide
+  colored-man-pages
+  sudo
+  archlinux
 )
 
 ## Vim editing for editor
@@ -123,6 +126,7 @@ alias home='cd ~'
 alias root='cd /'
 
 # Tools
+alias cat='bat'
 
 alias oc='opencode'
 alias cx='printf "\033[2J\033[3J\033[H" && claude --permission-mode bypassPermissions'
