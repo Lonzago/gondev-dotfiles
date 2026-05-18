@@ -1,5 +1,8 @@
 ## INITIALIZATION
 
+# Set ZDOTDIR for zsh config (used by plugins.zsh, fzf.zsh, bindings.zsh)
+export ZDOTDIR="$HOME/.config/zsh"
+
 # =========================================================
 # History Configuration
 # =========================================================
@@ -70,8 +73,8 @@ fi
 export ZSH="$HOME/.oh-my-zsh"
 
 # Load plugins from plugins.zsh (auto-installs from GitHub)
-if [[ -f "$HOME/gondev-dotfiles/zsh/plugins.zsh" ]]; then
-  source "$HOME/gondev-dotfiles/zsh/plugins.zsh"
+if [[ -f "${ZDOTDIR:-$HOME/.config/zsh}/plugins.zsh" ]]; then
+  source "${ZDOTDIR:-$HOME/.config/zsh}/plugins.zsh"
 fi
 
 # Load oh-my-zsh built-in plugins (colored-man-pages, sudo, archlinux)
@@ -178,13 +181,13 @@ alias cl="clear && display_sticker"
 source ~/.oh-my-zsh/oh-my-zsh.sh
 
 # Load custom fzf configuration
-if [[ -f "$HOME/gondev-dotfiles/zsh/fzf.zsh" ]]; then
-  source "$HOME/gondev-dotfiles/zsh/fzf.zsh"
+if [[ -f "${ZDOTDIR}/fzf.zsh" ]]; then
+  source "${ZDOTDIR}/fzf.zsh"
 fi
 
 # Load custom keybindings (must be after plugins)
-if [[ -f "$HOME/gondev-dotfiles/zsh/bindings.zsh" ]]; then
-  source "$HOME/gondev-dotfiles/zsh/bindings.zsh"
+if [[ -f "${ZDOTDIR}/bindings.zsh" ]]; then
+  source "${ZDOTDIR}/bindings.zsh"
 fi
 
 # File system

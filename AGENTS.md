@@ -36,7 +36,7 @@ cd hypr && stow -t ~/.config hypr
 | `walker/` | `~/.config/walker/` | App launcher |
 | `yazi/` | `~/.config/yazi/` | File manager |
 | `fastfetch/` | `~/.config/fastfetch/` | System info display |
-| `zsh/` | `~/.zshrc` | Shell config (root-level) |
+| `zsh/` | `~/.config/zsh/` | Shell config (zshrc, plugins, fzf, bindings) |
 
 **Ignored by stow**: `scripts/`, `keyboard/` (not deployed)
 

@@ -24,7 +24,7 @@ PACKAGES=(
     "walker:.config:walker"
     "yazi:.config:yazi"
     "fastfetch:.config:fastfetch"
-    "zsh:~:.zshrc"
+    "zsh:.config:zsh"
 )
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
