@@ -1,14 +1,86 @@
 # gondev-dotfiles
 
+My Hyprland + Omarchy dotfiles managed with GNU Stow.
 
+## Quick Start
 
-### Stow .Config
+```bash
+# Clone and deploy everything (with automatic backup)
+git clone https://github.com/Lonzago/gondev-dotfiles.git
+cd gondev-dotfiles
+./scripts/stow-deploy.sh
 
-para poder hacer el stow de los archivos que se encuentran en la carpeta de .config ejecutar el codigo
+# Preview what would happen (no changes)
+./scripts/stow-deploy.sh --dry-run
+```
 
-`stow -t ~ .config`
+## What's Included
 
-En el caso que se quiera hacer alguna instalacion de un folder en concreto como **hypr**
+| Package | Target | Description |
+|---------|--------|-------------|
+| `hypr/` | `~/.config/hypr/` | Hyprland window manager config |
+| `nvim/` | `~/.config/nvim/` | LazyVim Neovim setup |
+| `kitty/` | `~/.config/kitty/` | Terminal emulator |
+| `waybar/` | `~/.config/waybar/` | Status bar |
+| `walker/` | `~/.config/walker/` | App launcher |
+| `yazi/` | `~/.config/yazi/` | File manager |
+| `fastfetch/` | `~/.config/fastfetch/` | System info display |
+| `zsh/` | `~/.zshrc` | Shell configuration |
 
-`cd .config/hypr`
-`stow -t ~/.config hypr` 
+## Tech Stack
+
+- **WM**: Hyprland with [Omarchy](https://github.com/chmrr1/omarchy) theming
+- **Terminal**: Kitty with omarchy theme
+- **Shell**: zsh + Oh My Zsh + starship prompt
+- **Editor**: LazyVim (Neovim v8)
+- **Launcher**: Walker
+- **File Manager**: Yazi
+
+## Key Aliases
+
+Once deployed, these shortcuts are available in zsh:
+
+- `oc` — opencode
+- `lg` — lazygit
+- `ld` — lazydocker
+- `t` — tmux attach or new session
+- `n` — nvim (opens current dir if no args)
+- `g` — git
+- `ff` — fzf with image preview (kitty icat) or bat
+- `zd` — zoxide cd replacement
+
+## Oh My Zsh Plugins
+
+Enabled plugins in `.zshrc`:
+
+- **git** — aliases y funciones de git
+- **zsh-autosuggestions** — sugerencias basadas en historial
+- **zsh-syntax-highlighting** — highlight de comandos en tiempo real
+- **zoxide** — navigation inteligente (integrado con `zd`)
+- **colored-man-pages** — man pages en colores
+- **sudo** — doble ESC para anteponer sudo
+- **archlinux** — aliases para pacman
+
+## Fresh Install (Arch Linux)
+
+Run the setup script on a new Arch system:
+
+```bash
+curl -fsSL https://github.com/Lonzago/gondev-dotfiles/blob/main/scripts/install-hypr-arch.sh | bash
+```
+
+This installs:
+- Hyprland, Waybar, Fastfetch, Rofi
+- Neovim, Kitty, zsh, ffmpeg
+- AUR packages: swww, waypaper (via yay)
+
+## Notes
+
+- `scripts/` and `keyboard/` are **not** deployed via stow — they're manual
+- Hyprland config sources `hypr-omarchy.conf` which pulls the omarchy theme from `~/.config/omarchy/current/theme/`
+- Some configs depend on omarchy being installed separately
+
+## Repository
+
+- Remote: `https://github.com/Lonzago/gondev-dotfiles.git`
+- Branch: `main`
