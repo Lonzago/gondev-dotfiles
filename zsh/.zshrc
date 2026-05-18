@@ -1,4 +1,33 @@
-## INITIALIZATION 
+## INITIALIZATION
+
+# =========================================================
+# History Configuration
+# =========================================================
+HISTFILE="$HOME/.cache/zsh/history"
+HISTSIZE=100000
+SAVEHIST=100000
+
+setopt APPEND_HISTORY
+setopt SHARE_HISTORY
+setopt HIST_IGNORE_DUPS
+setopt HIST_IGNORE_SPACE
+setopt HIST_EXPIRE_DUPS_FIRST
+setopt HIST_FIND_NO_DUPS
+
+# =========================================================
+# Shell behaviour
+# =========================================================
+setopt AUTOCD
+setopt NOBEEP
+setopt NUMERIC_GLOB_SORT  # sort file10 after file9, not after file1
+
+# =========================================================
+# Completion System
+# =========================================================
+autoload -Uz compinit
+compinit -d "$HOME/.cache/zsh/zcompdump"
+zstyle ':completion:*' menu select
+zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
 
 eval "$(ssh-agent -s)"
 ssh-add ~/.ssh/gondev_gh
@@ -27,7 +56,7 @@ if [[ $- == *i* ]] && [[ ${TERM:-} != "dumb" ]] && command -v starship &> /dev/n
 fi
 
 if command -v zoxide &> /dev/null; then
-  eval "$(zoxide init bash)"
+  eval "$(zoxide init zsh)"
 fi
 
 if command -v try &> /dev/null; then
@@ -40,19 +69,18 @@ fi
 
 export ZSH="$HOME/.oh-my-zsh"
 
-## PLUGINS
-# If you come from bash you might have to change your $PATH.
+# Load plugins from plugins.zsh (auto-installs from GitHub)
+if [[ -f "$HOME/gondev-dotfiles/zsh/plugins.zsh" ]]; then
+  source "$HOME/gondev-dotfiles/zsh/plugins.zsh"
+fi
+
+# Load oh-my-zsh built-in plugins (colored-man-pages, sudo, archlinux)
+# These are part of oh-my-zsh, not available as separate repos
+plugins=(colored-man-pages sudo archlinux)
+
+## PLUGINS (oh-my-zsh extras - no auto-loading)
+# Path configuration
 export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH
-plugins=(
-  git
-  zsh-autosuggestions
-  zsh-syntax-highlighting
-  zoxide
-  colored-man-pages
-  sudo
-  archlinux
-  zsh-vi-mode
-)
 
 ## Vim editing for editor
 set -o vi
@@ -148,6 +176,16 @@ alias gcad='git commit -a --amend'
 alias cl="clear && display_sticker"
 
 source ~/.oh-my-zsh/oh-my-zsh.sh
+
+# Load custom fzf configuration
+if [[ -f "$HOME/gondev-dotfiles/zsh/fzf.zsh" ]]; then
+  source "$HOME/gondev-dotfiles/zsh/fzf.zsh"
+fi
+
+# Load custom keybindings (must be after plugins)
+if [[ -f "$HOME/gondev-dotfiles/zsh/bindings.zsh" ]]; then
+  source "$HOME/gondev-dotfiles/zsh/bindings.zsh"
+fi
 
 # File system
 if command -v eza &> /dev/null; then
