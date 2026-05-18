@@ -51,6 +51,7 @@ plugins=(
   colored-man-pages
   sudo
   archlinux
+  zsh-vi-mode
 )
 
 ## Vim editing for editor

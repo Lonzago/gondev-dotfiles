@@ -2,6 +2,11 @@
 
 This is a Hyprland + Omarchy dotfiles repository managed with GNU Stow.
 
+## Workflow Rules
+
+- **Before commits**: ALWAYS ask the user before committing. Group changes into logical commits and confirm each one.
+- **No auto-commits**: Do not commit without explicit permission.
+
 ## Deployment
 
 ```bash
@@ -67,7 +72,9 @@ cd hypr && stow -t ~/.config hypr
 ## Oh My Zsh Plugins
 
 Configured in `zsh/.zshrc`:
-- `git`, `zsh-autosuggestions`, `zsh-syntax-highlighting`, `zoxide`, `colored-man-pages`, `sudo`, `archlinux`
+- `git`, `zsh-autosuggestions`, `zsh-syntax-highlighting`, `zoxide`, `colored-man-pages`, `sudo`, `archlinux`, `zsh-vi-mode`
+
+**zsh-vi-mode**: Enhanced vi-mode with better cursor support and visual indicators for Normal/Insert mode.
 
 ## Neovim (LazyVim v8)
 

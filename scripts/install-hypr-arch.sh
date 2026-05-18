@@ -51,6 +51,11 @@ if [ ! -d "$ZSH_CUSTOM/zsh-syntax-highlighting" ]; then
     git clone https://github.com/zsh-users/zsh-syntax-highlighting.git "$ZSH_CUSTOM/zsh-syntax-highlighting"
 fi
 
+# zsh-vi-mode (enhanced vi mode for zsh)
+if [ ! -d "$ZSH_CUSTOM/zsh-vi-mode" ]; then
+    git clone https://github.com/jeffreytse/zsh-vi-mode.git "$ZSH_CUSTOM/zsh-vi-mode"
+fi
+
 echo -e "\n\t === Installation complete! ==="
 echo -e "\n\t Next steps:"
 echo -e "\t 1. Restart your terminal or run: exec zsh"

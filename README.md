@@ -60,6 +60,7 @@ Enabled plugins in `.zshrc`:
 - **colored-man-pages** — man pages en colores
 - **sudo** — doble ESC para anteponer sudo
 - **archlinux** — aliases para pacman
+- **zsh-vi-mode** — enhanced vi-mode con indicadores visuales de modo Normal/Insert
 
 ## Fresh Install (Arch Linux)
 
