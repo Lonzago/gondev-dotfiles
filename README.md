@@ -49,18 +49,25 @@ Once deployed, these shortcuts are available in zsh:
 - `ff` — fzf with image preview (kitty icat) or bat
 - `zd` — zoxide cd replacement
 
-## Oh My Zsh Plugins
+## Zsh Configuration
 
-Enabled plugins in `.zshrc`:
-
-- **git** — aliases y funciones de git
+### Plugins
+Uses custom `plugins.zsh` with auto-install:
 - **zsh-autosuggestions** — sugerencias basadas en historial
 - **zsh-syntax-highlighting** — highlight de comandos en tiempo real
-- **zoxide** — navigation inteligente (integrado con `zd`)
-- **colored-man-pages** — man pages en colores
-- **sudo** — doble ESC para anteponer sudo
-- **archlinux** — aliases para pacman
-- **zsh-vi-mode** — enhanced vi-mode con indicadores visuales de modo Normal/Insert
+- **zsh-history-substring-search** — buscar en historial con arrows
+- **zsh-vi-mode** — enhanced vi-mode con indicadores de modo
+- **fast-syntax-highlighting** — syntax highlighting avanzado
+- Plus: colored-man-pages, sudo, archlinux (oh-my-zsh)
+
+Run `zplugin-update` to update plugins.
+
+### FZF Keybindings
+- `Ctrl+T` — file picker con preview de bat
+- `Ctrl+R` — buscar en historial
+- `Ctrl+F` — file picker (sin archivos ocultos)
+- `Ctrl+Left/Right` — mover por palabras
+- `Up/Down` — historial por substring
 
 ## Fresh Install (Arch Linux)
 

@@ -69,12 +69,34 @@ cd hypr && stow -t ~/.config hypr
 - `ff` → fzf with image preview (kitty) or bat preview
 - `zd` → zoxide cd replacement
 
-## Oh My Zsh Plugins
+## Zsh Configuration
 
-Configured in `zsh/.zshrc`:
-- `git`, `zsh-autosuggestions`, `zsh-syntax-highlighting`, `zoxide`, `colored-man-pages`, `sudo`, `archlinux`, `zsh-vi-mode`
+### Plugin Loading
+Uses `zsh/plugins.zsh` with auto-install from GitHub:
+- `zsh-users/zsh-autosuggestions`
+- `zsh-users/zsh-syntax-highlighting`
+- `zsh-users/zsh-history-substring-search`
+- `jeffreytse/zsh-vi-mode`
+- `zdharma-continuum/fast-syntax-highlighting`
 
-**zsh-vi-mode**: Enhanced vi-mode with better cursor support and visual indicators for Normal/Insert mode.
+Plus oh-my-zsh built-ins: `colored-man-pages`, `sudo`, `archlinux`
+
+Run `zplugin-update` to update all plugins.
+
+### History
+- 100k commands saved
+- Share history between sessions
+- Ignore duplicates and spaces
+
+### FZF Keybindings
+- `Ctrl+T` — file picker with bat preview
+- `Ctrl+R` — history search
+- `Ctrl+F` — file picker (no hidden files)
+- `Ctrl+Left/Right` — word navigation
+- `Up/Down` — history substring search
+
+### Vi-mode
+Enhanced zsh-vi-mode with visual indicators for Normal/Insert mode.
 
 ## Neovim (LazyVim v8)
 
