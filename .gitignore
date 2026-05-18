@@ -1,0 +1,22 @@
+# zsh completion cache (machine-specific)
+.zcompdump*
+.zwc
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# Editor/ IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Environment-specific
+.env
+.env.local
+
+# Build outputs
+*.o
+*.so
+node_modules/
