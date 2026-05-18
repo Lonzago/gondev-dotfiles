@@ -4,7 +4,7 @@ This is a Hyprland + Omarchy dotfiles repository managed with GNU Stow.
 
 ## Workflow Rules
 
-- **Before commits**: ALWAYS ask the user before committing. Group changes into logical commits and confirm each one.
+- **Before commits**: ALWAYS show the changes and ask the user before committing. Wait for explicit confirmation ("yes", "si", "confirm", etc.) before executing each commit.
 - **No auto-commits**: Do not commit without explicit permission.
 
 ## Deployment
