@@ -1,0 +1,79 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+ENGINES_DIR="${UNREAL_ENGINES_DIR:-$HOME/Unreal-Engines}"
+LOG_MODE=false
+launch_args=()
+
+for arg in "$@"; do
+  if [[ "$arg" == "--log" ]]; then
+    LOG_MODE=true
+  else
+    launch_args+=("$arg")
+  fi
+done
+
+if [[ ! -d "$ENGINES_DIR" ]]; then
+  printf 'ue-launch: engines directory not found: %s\n' "$ENGINES_DIR" >&2
+  exit 1
+fi
+
+if ! command -v jq >/dev/null 2>&1; then
+  printf 'ue-launch: jq is required to read Build.version files\n' >&2
+  exit 1
+fi
+
+entries=()
+
+while IFS= read -r -d '' engine_dir; do
+  version_file="$engine_dir/Engine/Build/Build.version"
+  editor_bin="$engine_dir/Engine/Binaries/Linux/UnrealEditor"
+
+  [[ -f "$version_file" ]] || continue
+  [[ -x "$editor_bin" ]] || continue
+
+  major="$(jq -r '.MajorVersion // empty' "$version_file")"
+  minor="$(jq -r '.MinorVersion // empty' "$version_file")"
+  patch="$(jq -r '.PatchVersion // empty' "$version_file")"
+
+  [[ -n "$major" && -n "$minor" && -n "$patch" ]] || continue
+
+  version="$major.$minor.$patch"
+  folder_name="$(basename "$engine_dir")"
+  sort_key="$(printf '%03d.%03d.%03d' "$major" "$minor" "$patch")"
+  entries+=("$sort_key|$version|$folder_name|$editor_bin")
+done < <(find "$ENGINES_DIR" -mindepth 1 -maxdepth 1 -type d -print0)
+
+if [[ ${#entries[@]} -eq 0 ]]; then
+  printf 'ue-launch: no Unreal Editor installs found in %s\n' "$ENGINES_DIR" >&2
+  exit 1
+fi
+
+IFS=$'\n' sorted_entries=($(printf '%s\n' "${entries[@]}" | sort -r))
+unset IFS
+
+selected=""
+
+if command -v fzf >/dev/null 2>&1; then
+  selected="$({
+    for entry in "${sorted_entries[@]}"; do
+      IFS='|' read -r _ version folder_name editor_bin <<<"$entry"
+      printf '%s\t%s\t%s\n' "$version" "$folder_name" "$editor_bin"
+    done
+  } | fzf --prompt='Unreal Engine > ' --with-nth=1,2 --delimiter=$'\t' --exit-0)"
+
+  [[ -n "$selected" ]] || exit 0
+else
+  printf 'ue-launch: fzf is required to choose an Unreal Engine version\n' >&2
+  exit 1
+fi
+
+editor_bin="${selected##*$'\t'}"
+
+if [[ "$LOG_MODE" == true ]]; then
+  exec env SDL_VIDEODRIVER=x11 "$editor_bin" "${launch_args[@]}"
+fi
+
+nohup env SDL_VIDEODRIVER=x11 "$editor_bin" "${launch_args[@]}" >/dev/null 2>&1 &
+printf 'ue-launch: started %s in background\n' "$(basename "$(dirname "$(dirname "$editor_bin")")")"

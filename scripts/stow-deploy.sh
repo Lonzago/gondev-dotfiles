@@ -15,8 +15,9 @@ fi
 
 # Packages to stow and their target locations
 # Format: "package_name:target_parent:target_name"
-# For zsh target_parent is ~ (home), for others it's ~/.config
+# Targets can live under ~, ~/.config, or other shared home subdirectories
 PACKAGES=(
+    "bin:.local:bin"
     "hypr:.config:hypr"
     "nvim:.config:nvim"
     "kitty:.config:kitty"
@@ -44,6 +45,13 @@ backup_existing() {
         target_path="$HOME/$target_name"
     else
         target_path="$HOME/$target_parent/$target_name"
+    fi
+
+    # ~/.local/bin is a shared command directory, so keep it in place and let
+    # stow manage only the package's symlinked commands inside it.
+    if [[ "$package" == "bin" ]]; then
+        echo "  ✓ Shared target $target_path stays in place — stow will manage command symlinks inside it"
+        return
     fi
 
     # Check if the target exists (file or directory or symlink)

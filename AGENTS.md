@@ -29,6 +29,7 @@ cd hypr && stow -t ~/.config hypr
 
 | Directory | Target | Notes |
 |-----------|--------|-------|
+| `bin/` | `~/.local/bin/` | User command scripts deployed via stow |
 | `hypr/` | `~/.config/hypr/` | Hyprland window manager |
 | `nvim/` | `~/.config/nvim/` | LazyVim Neovim config |
 | `kitty/` | `~/.config/kitty/` | Terminal emulator |

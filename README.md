@@ -18,6 +18,7 @@ cd gondev-dotfiles
 
 | Package | Target | Description |
 |---------|--------|-------------|
+| `bin/` | `~/.local/bin/` | User command scripts, including launcher helpers |
 | `hypr/` | `~/.config/hypr/` | Hyprland window manager config |
 | `nvim/` | `~/.config/nvim/` | LazyVim Neovim setup |
 | `kitty/` | `~/.config/kitty/` | Terminal emulator |
