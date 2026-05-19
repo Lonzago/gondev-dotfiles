@@ -7,6 +7,62 @@ LOG_MODE=false
 PROJECT_FILE=""
 launch_args=()
 
+read_project_engine() {
+  local project_file="$1"
+  local association
+
+  association="$(jq -r '.EngineAssociation // empty' "$project_file")"
+  [[ -n "$association" ]] || return 1
+
+  printf '%s\n' "$association"
+}
+
+resolve_path() {
+  local path="$1"
+
+  if command -v realpath >/dev/null 2>&1; then
+    realpath "$path"
+    return 0
+  fi
+
+  if command -v readlink >/dev/null 2>&1; then
+    readlink -f "$path"
+    return 0
+  fi
+
+  printf '%s\n' "$path"
+}
+
+find_engine_by_association() {
+  local association="$1"
+  local engine_dir version_file major minor patch folder_name sort_key
+
+  while IFS= read -r -d '' engine_dir; do
+    version_file="$engine_dir/Engine/Build/Build.version"
+    [[ -f "$version_file" ]] || continue
+
+    major="$(jq -r '.MajorVersion // empty' "$version_file")"
+    minor="$(jq -r '.MinorVersion // empty' "$version_file")"
+    patch="$(jq -r '.PatchVersion // empty' "$version_file")"
+    [[ -n "$major" && -n "$minor" && -n "$patch" ]] || continue
+
+    folder_name="$(basename "$engine_dir")"
+    if [[ "$folder_name" == *"$association"* || "$association" == "$major.$minor.$patch" ]]; then
+      printf '%s\n' "$engine_dir"
+      return 0
+    fi
+  done < <(find "$ENGINES_DIR" -mindepth 1 -maxdepth 1 -type d -print0)
+
+  return 1
+}
+
+build_selected_entry() {
+  local version="$1"
+  local folder_name="$2"
+  local editor_bin="$3"
+  printf '%s\t%s\t%s\n' "$version" "$folder_name" "$editor_bin"
+}
+
 for arg in "$@"; do
   if [[ "$arg" == "--log" ]]; then
     LOG_MODE=true
@@ -25,6 +81,18 @@ done
 if [[ -n "$PROJECT_FILE" && ! -f "$PROJECT_FILE" ]]; then
   printf 'ue-launch: project file not found: %s\n' "$PROJECT_FILE" >&2
   exit 1
+fi
+
+if [[ -n "$PROJECT_FILE" ]]; then
+  PROJECT_FILE="$(resolve_path "$PROJECT_FILE")"
+fi
+
+project_engine=""
+if [[ -n "$PROJECT_FILE" ]]; then
+  if ! project_engine="$(read_project_engine "$PROJECT_FILE")"; then
+    printf 'ue-launch: project file has no EngineAssociation: %s\n' "$PROJECT_FILE" >&2
+    exit 1
+  fi
 fi
 
 if [[ ! -d "$ENGINES_DIR" ]]; then
@@ -63,21 +131,28 @@ if [[ ${#entries[@]} -eq 0 ]]; then
   exit 1
 fi
 
+if [[ -n "$project_engine" ]]; then
+  if matched_engine="$(find_engine_by_association "$project_engine")"; then
+    editor_bin="$matched_engine/Engine/Binaries/Linux/UnrealEditor"
+    selected="$(build_selected_entry "$project_engine" "$(basename "$matched_engine")" "$editor_bin")"
+  fi
+fi
+
 IFS=$'\n' sorted_entries=($(printf '%s\n' "${entries[@]}" | sort -r))
 unset IFS
 
-selected=""
+selected="${selected:-}"
 
-if command -v fzf >/dev/null 2>&1; then
+if [[ -z "$selected" ]] && command -v fzf >/dev/null 2>&1; then
   selected="$({
     for entry in "${sorted_entries[@]}"; do
       IFS='|' read -r _ version folder_name editor_bin <<<"$entry"
-      printf '%s\t%s\t%s\n' "$version" "$folder_name" "$editor_bin"
+      build_selected_entry "$version" "$folder_name" "$editor_bin"
     done
   } | fzf --prompt='Unreal Engine > ' --with-nth=1,2 --delimiter=$'\t' --exit-0)"
 
   [[ -n "$selected" ]] || exit 0
-else
+elif [[ -z "$selected" ]]; then
   printf 'ue-launch: fzf is required to choose an Unreal Engine version\n' >&2
   exit 1
 fi
