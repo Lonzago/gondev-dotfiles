@@ -104,7 +104,14 @@ Extra plugins in `lua/plugins/`:
 - `disable-news-alert.lua` — hide LazyVim news
 - `spectre.lua` — find & replace
 - `snacks-animated-scrolling-off.lua` — disable scrolling animation
-- `unreal-plugins.lua` — gaming plugins (disable if not needed)
+- `unreal-plugins.lua` — Unreal Engine plugins (requires UNL build + fd/rg for UEP; keep `neo-tree-unl.nvim` only if you want the legacy explorer hook)
+
+
+### Unreal Engine Plugins
+
+The Unreal bundle lives in `lua/plugins/unreal-plugins.lua`. It requires `cargo` for `taku25/UNL.nvim` (build: `cargo build --release --manifest-path scanner/Cargo.toml`) and `fd` + `rg` for `taku25/UEP.nvim`. If you keep `taku25/neo-tree-unl.nvim`, treat it as a legacy integration because UNL supersedes the archived neo-tree-unl path.
+
+If you want to roll back quickly, restore `lua/plugins/unreal-plugins.lua.bak` and run `:Lazy`. To disable the bundle temporarily, make the file return `{}`.
 
 ## LSP & Languages
 
