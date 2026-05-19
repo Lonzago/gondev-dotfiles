@@ -4,15 +4,28 @@ set -euo pipefail
 
 ENGINES_DIR="${UNREAL_ENGINES_DIR:-$HOME/Unreal-Engines}"
 LOG_MODE=false
+PROJECT_FILE=""
 launch_args=()
 
 for arg in "$@"; do
   if [[ "$arg" == "--log" ]]; then
     LOG_MODE=true
+  elif [[ "$arg" == *.uproject ]]; then
+    if [[ -n "$PROJECT_FILE" ]]; then
+      printf 'ue-launch: only one .uproject path can be provided\n' >&2
+      exit 1
+    fi
+
+    PROJECT_FILE="$arg"
   else
     launch_args+=("$arg")
   fi
 done
+
+if [[ -n "$PROJECT_FILE" && ! -f "$PROJECT_FILE" ]]; then
+  printf 'ue-launch: project file not found: %s\n' "$PROJECT_FILE" >&2
+  exit 1
+fi
 
 if [[ ! -d "$ENGINES_DIR" ]]; then
   printf 'ue-launch: engines directory not found: %s\n' "$ENGINES_DIR" >&2
@@ -71,9 +84,17 @@ fi
 
 editor_bin="${selected##*$'\t'}"
 
-if [[ "$LOG_MODE" == true ]]; then
-  exec env SDL_VIDEODRIVER=x11 "$editor_bin" "${launch_args[@]}"
+editor_args=()
+
+if [[ -n "$PROJECT_FILE" ]]; then
+  editor_args+=("$PROJECT_FILE")
 fi
 
-nohup env SDL_VIDEODRIVER=x11 "$editor_bin" "${launch_args[@]}" >/dev/null 2>&1 &
+editor_args+=("${launch_args[@]}")
+
+if [[ "$LOG_MODE" == true ]]; then
+  exec env SDL_VIDEODRIVER=x11 "$editor_bin" "${editor_args[@]}"
+fi
+
+nohup env SDL_VIDEODRIVER=x11 "$editor_bin" "${editor_args[@]}" >/dev/null 2>&1 &
 printf 'ue-launch: started %s in background\n' "$(basename "$(dirname "$(dirname "$editor_bin")")")"

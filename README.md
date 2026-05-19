@@ -86,6 +86,7 @@ This installs:
 ## Notes
 
 - `scripts/` and `keyboard/` are **not** deployed via stow — they're manual
+- Register `.uproject` files with the user-local Unreal launcher: `./scripts/register-uproject-mime.sh`
 - Hyprland config sources `hypr-omarchy.conf` which pulls the omarchy theme from `~/.config/omarchy/current/theme/`
 - Some configs depend on omarchy being installed separately
 
