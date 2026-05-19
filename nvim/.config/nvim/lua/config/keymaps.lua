@@ -14,6 +14,9 @@ vim.keymap.set("i", "<M-Space>", function()
   require("blink.cmp").show()
 end, { noremap = true, desc = "Manual completion (Alt+Space)" })
 
+vim.keymap.set("n", "<C-q>", "<cmd>qa<cr>", { noremap = true, silent = true, desc = "Quit Neovim" })
+vim.keymap.set("i", "<C-q>", "<Esc><cmd>qa<cr>", { noremap = true, silent = true, desc = "Quit Neovim" })
+
 -- Force disable blink.cmp auto-trigger (LazyVim override)
 vim.api.nvim_create_autocmd("VimEnter", {
   once = true,
