@@ -20,3 +20,9 @@ Thumbs.db
 *.o
 *.so
 node_modules/
+
+# Generated AI/SDD artifacts and local rollback files
+.atl/
+**/.atl/
+*.bak
+openspec/
