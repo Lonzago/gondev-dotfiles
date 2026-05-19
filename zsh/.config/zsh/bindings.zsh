@@ -6,8 +6,8 @@
 # These must be set before zsh-vi-mode is loaded or in the zvm_after_init hook
 
 # Cursor shape per vi mode (if zsh-vi-mode supports it)
-# ZVM_INSERT_MODE_CURSOR=$ZVM_CURSOR_BEAM
-# ZVM_NORMAL_MODE_CURSOR=$ZVM_CURSOR_BLOCK
+ ZVM_INSERT_MODE_CURSOR=$ZVM_CURSOR_BEAM
+ ZVM_NORMAL_MODE_CURSOR=$ZVM_CURSOR_BLOCK
 
 # Disable command mode line highlight
 ZVM_VI_HIGHLIGHT_BACKGROUND=none
