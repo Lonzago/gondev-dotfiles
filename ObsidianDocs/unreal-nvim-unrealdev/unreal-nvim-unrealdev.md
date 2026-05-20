@@ -34,24 +34,24 @@ Make Neovim work as an Unreal Engine helper with:
 
 Before the config, here’s what the moving parts actually do.
 
-| Plugin | What it does |
-|--------|--------------|
-| `UnrealDev.nvim` | A wrapper that groups the Unreal tools under one command set (`:UDEV`) |
-| `UNL.nvim` | Shared core library used by the Unreal plugins |
-| `UEP.nvim` | Finds Unreal project files, modules, classes, and navigation targets |
-| `UBT.nvim` | Runs Unreal Build Tool tasks from Neovim |
-| `UCM.nvim` | Helps create/manage Unreal C++ classes and file pairs |
-| `ULG.nvim` | Reads Unreal logs inside Neovim |
-| `UNX.nvim` | Shows a logical Unreal project tree |
-| `USX.nvim` | Unreal shader syntax and query support |
-| `tree-sitter-manager.nvim` | Installs and manages Tree-sitter parsers |
+| Plugin                                                                             | What it does                                                           |
+| ---------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| [`UnrealDev.nvim`](https://github.com/taku25/UnrealDev.nvim)                       | A wrapper that groups the Unreal tools under one command set (`:UDEV`) |
+| [`UNL.nvim`](https://github.com/taku25/UNL.nvim)                                   | Shared core library used by the Unreal plugins                         |
+| [`UEP.nvim`](https://github.com/taku25/UEP.nvim)                                   | Finds Unreal project files, modules, classes, and navigation targets   |
+| [`UBT.nvim`](https://github.com/taku25/UBT.nvim)                                   | Runs Unreal Build Tool tasks from Neovim                               |
+| [`UCM.nvim`](https://github.com/taku25/UCM.nvim)                                   | Helps create/manage Unreal C++ classes and file pairs                  |
+| [`ULG.nvim`](https://github.com/taku25/ULG.nvim)                                   | Reads Unreal logs inside Neovim                                        |
+| [`UNX.nvim`](https://github.com/taku25/UNX.nvim)                                   | Shows a logical Unreal project tree                                    |
+| [`USX.nvim`](https://github.com/taku25/USX.nvim)                                   | Unreal shader syntax and query support                                 |
+| [`tree-sitter-manager.nvim`](https://github.com/romus204/tree-sitter-manager.nvim) | Installs and manages Tree-sitter parsers                               |
 
 ## What I changed
 
 ### 1) Switched to the UnrealDev wrapper
 
 I replaced the old individual Unreal plugin bundle with:
-- `taku25/UnrealDev.nvim`
+- [`taku25/UnrealDev.nvim`](https://github.com/taku25/UnrealDev.nvim)
 
 Enabled modules:
 - `UBT`
@@ -59,8 +59,6 @@ Enabled modules:
 - `ULG`
 - `UCM`
 - `UNX`
-
-Left disabled for now:
 - `USH`
 - `UEA`
 - `UDB`
@@ -75,10 +73,10 @@ In practice, this means I can think in terms of one Unreal toolchain instead of 
 ### 2) Added the Unreal parser stack
 
 I installed and configured:
-- `romus204/tree-sitter-manager.nvim`
-- `taku25/tree-sitter-unreal-cpp`
-- `taku25/tree-sitter-unreal-shader`
-- `taku25/tree-sitter-verse`
+- [`romus204/tree-sitter-manager.nvim`](https://github.com/romus204/tree-sitter-manager.nvim)
+- [`taku25/tree-sitter-unreal-cpp`](https://github.com/taku25/tree-sitter-unreal-cpp)
+- [`taku25/tree-sitter-unreal-shader`](https://github.com/taku25/tree-sitter-unreal-shader)
+- [`taku25/tree-sitter-verse`](https://github.com/taku25/tree-sitter-verse)
 
 What that means in practice:
 - C++ files are parsed with Unreal macros in mind
@@ -95,7 +93,7 @@ I also added filetype mappings for:
 ### 3) Added a project engine helper
 
 I created a helper script:
-- `bin/.local/bin/ue-unlrc`
+- [`ue-unlrc`](../../../../bin/.local/bin/ue-unlrc)
 
 It:
 - finds the `.uproject`
@@ -113,9 +111,9 @@ It’s a tiny helper, but it saves time every time I start a new project.
 ### 4) Updated docs
 
 I documented the setup in:
-- root `README.md`
-- `AGENTS.md`
-- `nvim/.config/nvim/README.md`
+- [`README.md`](../../../../README.md)
+- [`AGENTS.md`](../../../../AGENTS.md)
+- [`nvim/.config/nvim/README.md`](../../../nvim/.config/nvim/README.md)
 
 ## Problems I hit
 
@@ -161,7 +159,7 @@ So this was not cosmetic. It affected the features I wanted to use.
 Fix:
 - removed `cpp` from the default `ensure_installed` list
 - overrode `nvim-treesitter.parsers.cpp` to use:
-  - `https://github.com/taku25/tree-sitter-unreal-cpp`
+  - [`tree-sitter-unreal-cpp`](https://github.com/taku25/tree-sitter-unreal-cpp)
   - revision `e2b94d3bd3ce359ff732116cc21f34ecbecfca50`
 
 ### Problem 4: `nvim-treesitter` got dirty local query files
@@ -187,7 +185,7 @@ This tool matters because it installs the parser sources and helps keep the pars
 It’s the bridge between the parser repo and Neovim.
 
 Fix:
-- added `tree-sitter-manager.nvim`
+- added [`tree-sitter-manager.nvim`](https://github.com/romus204/tree-sitter-manager.nvim)
 - configured it to install the Unreal parsers
 
 ## Final workflow
@@ -212,6 +210,7 @@ The real lesson is that editor setup gets much easier when the layers are clear:
 - parser manager for syntax
 - small helper scripts for project config
 
+Specific takeaways:
 - UnrealDev is easier to manage when the wrapper owns the suite and the individual plugins stay as dependencies.
 - The C++ parser override must happen in config, not by hacking installed plugin files.
 - `checkhealth` is useful because it points to the exact missing piece instead of guessing.
@@ -236,21 +235,21 @@ ue-unlrc .
 These are the links I actually read while figuring this out.
 
 ### Neovim and plugin docs
-- https://github.com/taku25/UnrealDev.nvim
-- https://github.com/taku25/UNL.nvim
-- https://github.com/taku25/UEP.nvim
-- https://github.com/taku25/UBT.nvim
-- https://github.com/taku25/UCM.nvim
-- https://github.com/taku25/ULG.nvim
-- https://github.com/taku25/UNX.nvim
-- https://github.com/taku25/neo-tree-unl.nvim
-- https://github.com/folke/lazy.nvim
+- [`UnrealDev.nvim`](https://github.com/taku25/UnrealDev.nvim)
+- [`UNL.nvim`](https://github.com/taku25/UNL.nvim)
+- [`UEP.nvim`](https://github.com/taku25/UEP.nvim)
+- [`UBT.nvim`](https://github.com/taku25/UBT.nvim)
+- [`UCM.nvim`](https://github.com/taku25/UCM.nvim)
+- [`ULG.nvim`](https://github.com/taku25/ULG.nvim)
+- [`UNX.nvim`](https://github.com/taku25/UNX.nvim)
+- [`neo-tree-unl.nvim`](https://github.com/taku25/neo-tree-unl.nvim)
+- [`lazy.nvim`](https://github.com/folke/lazy.nvim)
 
 ### Tree-sitter docs
-- https://github.com/romus204/tree-sitter-manager.nvim
-- https://github.com/taku25/tree-sitter-unreal-cpp
-- https://github.com/taku25/tree-sitter-unreal-shader
-- https://github.com/taku25/tree-sitter-verse
+- [`tree-sitter-manager.nvim`](https://github.com/romus204/tree-sitter-manager.nvim)
+- [`tree-sitter-unreal-cpp`](https://github.com/taku25/tree-sitter-unreal-cpp)
+- [`tree-sitter-unreal-shader`](https://github.com/taku25/tree-sitter-unreal-shader)
+- [`tree-sitter-verse`](https://github.com/taku25/tree-sitter-verse)
 
 ## Result
 
