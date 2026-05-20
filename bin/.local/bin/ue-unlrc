@@ -1,0 +1,215 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+ENGINES_DIR="${UNREAL_ENGINES_DIR:-$HOME/Unreal-Engines}"
+PRESET_TARGET="Win64DevelopWithEditor"
+PROJECT_FILE=""
+OUTPUT_FILE=""
+DRY_RUN=false
+
+resolve_path() {
+  local path="$1"
+
+  if command -v realpath >/dev/null 2>&1; then
+    realpath "$path"
+    return 0
+  fi
+
+  if command -v readlink >/dev/null 2>&1; then
+    readlink -f "$path"
+    return 0
+  fi
+
+  printf '%s\n' "$path"
+}
+
+find_project_file_in_dir() {
+  local dir="$1"
+  local projects=()
+
+  shopt -s nullglob
+  projects=("$dir"/*.uproject)
+  shopt -u nullglob
+
+  case "${#projects[@]}" in
+    0)
+      return 1
+      ;;
+    1)
+      printf '%s\n' "${projects[0]}"
+      return 0
+      ;;
+    *)
+      if command -v fzf >/dev/null 2>&1; then
+        printf '%s\n' "${projects[@]}" | fzf --prompt='Unreal project > ' --exit-0
+        return 0
+      fi
+
+      printf 'ue-unlrc: multiple .uproject files found in %s, install fzf to pick one\n' "$dir" >&2
+      return 1
+      ;;
+  esac
+}
+
+read_project_engine() {
+  local project_file="$1"
+
+  jq -r '.EngineAssociation // empty' "$project_file"
+}
+
+find_engine_by_association() {
+  local association="$1"
+  local engine_dir version_file major minor patch folder_name
+
+  while IFS= read -r -d '' engine_dir; do
+    version_file="$engine_dir/Engine/Build/Build.version"
+    [[ -f "$version_file" ]] || continue
+
+    major="$(jq -r '.MajorVersion // empty' "$version_file")"
+    minor="$(jq -r '.MinorVersion // empty' "$version_file")"
+    patch="$(jq -r '.PatchVersion // empty' "$version_file")"
+    [[ -n "$major" && -n "$minor" && -n "$patch" ]] || continue
+
+    folder_name="$(basename "$engine_dir")"
+    if [[ "$folder_name" == *"$association"* || "$association" == "$major.$minor.$patch" ]]; then
+      printf '%s\n' "$engine_dir"
+      return 0
+    fi
+  done < <(find "$ENGINES_DIR" -mindepth 1 -maxdepth 1 -type d -print0)
+
+  return 1
+}
+
+choose_engine_interactively() {
+  local engine_dir version_file major minor patch folder_name sort_key
+  local entries=()
+
+  while IFS= read -r -d '' engine_dir; do
+    version_file="$engine_dir/Engine/Build/Build.version"
+    [[ -f "$version_file" ]] || continue
+
+    major="$(jq -r '.MajorVersion // empty' "$version_file")"
+    minor="$(jq -r '.MinorVersion // empty' "$version_file")"
+    patch="$(jq -r '.PatchVersion // empty' "$version_file")"
+    [[ -n "$major" && -n "$minor" && -n "$patch" ]] || continue
+
+    folder_name="$(basename "$engine_dir")"
+    sort_key="$(printf '%03d.%03d.%03d' "$major" "$minor" "$patch")"
+    entries+=("$sort_key|$major.$minor.$patch|$folder_name|$engine_dir")
+  done < <(find "$ENGINES_DIR" -mindepth 1 -maxdepth 1 -type d -print0)
+
+  [[ ${#entries[@]} -gt 0 ]] || return 1
+
+  if ! command -v fzf >/dev/null 2>&1; then
+    printf 'ue-unlrc: fzf is required to choose an Unreal Engine version\n' >&2
+    return 1
+  fi
+
+  printf '%s\n' "${entries[@]}" | sort -r | while IFS='|' read -r _ version folder_name engine_dir; do
+    printf '%s\t%s\t%s\n' "$version" "$folder_name" "$engine_dir"
+  done | fzf --prompt='Unreal Engine > ' --with-nth=1,2 --delimiter=$'\t' --exit-0 | cut -f3
+}
+
+write_unlrc() {
+  local project_root="$1"
+  local engine_path="$2"
+  local output_file="$3"
+  local tmp_file backup_file
+
+  tmp_file="$(mktemp)"
+
+  if [[ -f "$output_file" ]]; then
+    backup_file="${output_file}.bak"
+    cp "$output_file" "$backup_file"
+  fi
+
+  if [[ -f "$output_file" ]]; then
+    jq --arg engine_path "$engine_path" --arg preset_target "$PRESET_TARGET" \
+      '. + {engine_path: $engine_path} + {preset_target: $preset_target}' \
+      "$output_file" >"$tmp_file"
+  else
+    jq -n --arg engine_path "$engine_path" --arg preset_target "$PRESET_TARGET" \
+      '{engine_path: $engine_path, preset_target: $preset_target}' >"$tmp_file"
+  fi
+
+  if [[ "$DRY_RUN" == true ]]; then
+    printf 'ue-unlrc: would write %s\n' "$output_file"
+    rm -f "$tmp_file"
+    return 0
+  fi
+
+  mv "$tmp_file" "$output_file"
+  printf 'ue-unlrc: wrote %s for project %s\n' "$output_file" "$project_root"
+}
+
+for arg in "$@"; do
+  case "$arg" in
+    --dry-run)
+      DRY_RUN=true
+      ;;
+    --preset-target=*)
+      PRESET_TARGET="${arg#*=}"
+      ;;
+    --preset-target)
+      printf 'ue-unlrc: --preset-target requires a value\n' >&2
+      exit 1
+      ;;
+    *.uproject)
+      if [[ -n "$PROJECT_FILE" ]]; then
+        printf 'ue-unlrc: only one .uproject path can be provided\n' >&2
+        exit 1
+      fi
+      PROJECT_FILE="$arg"
+      ;;
+    *)
+      if [[ -z "$PROJECT_FILE" && -d "$arg" ]]; then
+        PROJECT_FILE="$(find_project_file_in_dir "$arg")"
+      else
+        printf 'ue-unlrc: unrecognized argument: %s\n' "$arg" >&2
+        exit 1
+      fi
+      ;;
+  esac
+done
+
+if [[ -z "$PROJECT_FILE" ]]; then
+  PROJECT_FILE="$(find_project_file_in_dir "$PWD")"
+fi
+
+if [[ -z "$PROJECT_FILE" ]]; then
+  printf 'ue-unlrc: could not find a .uproject file\n' >&2
+  exit 1
+fi
+
+PROJECT_FILE="$(resolve_path "$PROJECT_FILE")"
+[[ -f "$PROJECT_FILE" ]] || { printf 'ue-unlrc: project file not found: %s\n' "$PROJECT_FILE" >&2; exit 1; }
+
+if [[ ! -d "$ENGINES_DIR" ]]; then
+  printf 'ue-unlrc: engines directory not found: %s\n' "$ENGINES_DIR" >&2
+  exit 1
+fi
+
+if ! command -v jq >/dev/null 2>&1; then
+  printf 'ue-unlrc: jq is required\n' >&2
+  exit 1
+fi
+
+project_root="$(dirname "$PROJECT_FILE")"
+output_file="$project_root/.unlrc.json"
+association="$(read_project_engine "$PROJECT_FILE")"
+engine_path=""
+
+if [[ -n "$association" ]]; then
+  if ! engine_path="$(find_engine_by_association "$association")"; then
+    printf 'ue-unlrc: no engine matched EngineAssociation %s, pick one\n' "$association" >&2
+  fi
+fi
+
+if [[ -z "$engine_path" ]]; then
+  engine_path="$(choose_engine_interactively)"
+fi
+
+[[ -n "$engine_path" ]] || { printf 'ue-unlrc: no engine selected\n' >&2; exit 1; }
+
+write_unlrc "$project_root" "$engine_path" "$output_file"

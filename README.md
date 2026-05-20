@@ -27,6 +27,8 @@ cd gondev-dotfiles
 | `yazi/` | `~/.config/yazi/` | File manager |
 | `fastfetch/` | `~/.config/fastfetch/` | System info display |
 | `zsh/` | `~/.zshrc` | Shell configuration |
+| `nvim/` | `~/.config/nvim/` | LazyVim config, including UnrealDev.nvim wrapper and Unreal parser setup |
+| `bin/` | `~/.local/bin/` | User scripts, including Unreal launcher and `.unlrc.json` generator |
 
 ## Tech Stack
 

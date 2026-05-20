@@ -38,6 +38,8 @@ cd hypr && stow -t ~/.config hypr
 | `yazi/` | `~/.config/yazi/` | File manager |
 | `fastfetch/` | `~/.config/fastfetch/` | System info display |
 | `zsh/` | `~/.config/zsh/` | Shell config (zshrc, plugins, fzf, bindings) |
+| `nvim/` | `~/.config/nvim/` | LazyVim Neovim config, including UnrealDev.nvim wrapper and parser setup |
+| `bin/` | `~/.local/bin/` | User scripts, including Unreal launcher and `.unlrc.json` generator |
 
 **Ignored by stow**: `scripts/`, `keyboard/` (not deployed)
 

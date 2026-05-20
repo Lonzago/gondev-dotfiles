@@ -105,13 +105,41 @@ Extra plugins in `lua/plugins/`:
 - `spectre.lua` — find & replace
 - `snacks-animated-scrolling-off.lua` — disable scrolling animation
 - `unreal-plugins.lua` — Unreal Engine plugins (requires UNL build + fd/rg for UEP; keep `neo-tree-unl.nvim` only if you want the legacy explorer hook)
+- `unreal-plugins.lua` — UnrealDev.nvim wrapper plus Unreal parsers; requires the UNL scanner build and tree-sitter-manager
+
+Helper scripts:
+- `bin/.local/bin/ue-unlrc` — creates `.unlrc.json` for a project by resolving the matching Unreal Engine path
 
 
 ### Unreal Engine Plugins
 
-The Unreal bundle lives in `lua/plugins/unreal-plugins.lua`. It requires `cargo` for `taku25/UNL.nvim` (build: `cargo build --release --manifest-path scanner/Cargo.toml`) and `fd` + `rg` for `taku25/UEP.nvim`. If you keep `taku25/neo-tree-unl.nvim`, treat it as a legacy integration because UNL supersedes the archived neo-tree-unl path.
+The Unreal bundle now uses `taku25/UnrealDev.nvim` as a wrapper in `lua/plugins/unreal-plugins.lua`. It pulls in the suite plugins you enable through `setup_modules`.
+
+Requirements:
+- `cargo` for `taku25/UNL.nvim` (build: `cargo build --release --manifest-path scanner/Cargo.toml`)
+- `fd` for file discovery
+- `rg` (ripgrep) for text search
+- `tree-sitter-manager.nvim` for Unreal parser installation
+
+Current enabled modules:
+- `UBT`
+- `UEP`
+- `ULG`
+- `UCM`
+- `UNX`
+
+Disabled in the wrapper config for now:
+- `USH`
+- `UEA`
+- `UDB`
+
+Note: `neo-tree-unl.nvim` is legacy/archived; the current setup favors `UNX.nvim`.
 
 If you want to roll back quickly, restore `lua/plugins/unreal-plugins.lua.bak` and run `:Lazy`. To disable the bundle temporarily, make the file return `{}`.
+
+Health check follow-up:
+- If `:checkhealth UnrealDev` reports a missing UNL scanner, build it in the `UNL.nvim` plugin directory with `cargo build --release --manifest-path scanner/Cargo.toml`.
+- If tree-sitter-manager is missing, install it through `:Lazy` and rerun the health check.
 
 ## LSP & Languages
 
