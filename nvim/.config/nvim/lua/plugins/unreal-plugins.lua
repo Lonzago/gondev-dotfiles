@@ -58,6 +58,7 @@ return {
               verse = "verse",
               usf = "ushader",
               ush = "ushader",
+              gd = "gdscript",
             },
           })
           require("tree-sitter-manager").setup(opts)
@@ -80,11 +81,11 @@ return {
         UBT = true,
         UEP = true,
         ULG = true,
-        USH = false,
+        USH = true,
         UCM = true,
-        UEA = false,
+        UEA = true,
         UNX = true,
-        UDB = false,
+        UDB = true,
       },
     },
   },

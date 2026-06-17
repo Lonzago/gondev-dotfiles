@@ -7,6 +7,7 @@ return {
         pyright = {},
         marksman = {},
         tsserver = {},
+        gdscript = {},
         clangd = {
           keys = {
             { "<leader>cH", "<cmd>ClangdSwitchSourceHeader<cr>", desc = "Switch Source/Header" },
@@ -31,4 +32,3 @@ return {
     },
   },
 }
-

@@ -106,6 +106,7 @@ Extra plugins in `lua/plugins/`:
 - `snacks-animated-scrolling-off.lua` — disable scrolling animation
 - `unreal-plugins.lua` — Unreal Engine plugins (requires UNL build + fd/rg for UEP; keep `neo-tree-unl.nvim` only if you want the legacy explorer hook)
 - `unreal-plugins.lua` — UnrealDev.nvim wrapper plus Unreal parsers; requires the UNL scanner build and tree-sitter-manager
+- `lsp-config.lua` — LSP servers including GDScript
 
 Helper scripts:
 - `bin/.local/bin/ue-unlrc` — creates `.unlrc.json` for a project by resolving the matching Unreal Engine path
@@ -153,6 +154,8 @@ Or install via terminal:
 ```bash
 nvim --headless +MasonInstall rust_analyzer ts_ls eslintDjango
 ```
+
+Godot support currently covers `.gd` files via `gdscript` filetype mapping and the `gdscript` LSP server.
 
 ## Configuration Files
 
