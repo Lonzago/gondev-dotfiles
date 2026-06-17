@@ -1,0 +1,178 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+ENGINES_DIR="${UNREAL_ENGINES_DIR:-$HOME/Unreal-Engines}"
+PROJECT_FILE=""
+
+resolve_path() {
+  local path="$1"
+
+  if command -v realpath >/dev/null 2>&1; then
+    realpath "$path"
+    return 0
+  fi
+
+  if command -v readlink >/dev/null 2>&1; then
+    readlink -f "$path"
+    return 0
+  fi
+
+  printf '%s\n' "$path"
+}
+
+find_project_file_in_dir() {
+  local dir="$1"
+  local projects=()
+
+  shopt -s nullglob
+  projects=("$dir"/*.uproject)
+  shopt -u nullglob
+
+  case "${#projects[@]}" in
+    0)
+      return 1
+      ;;
+    1)
+      printf '%s\n' "${projects[0]}"
+      return 0
+      ;;
+    *)
+      if command -v fzf >/dev/null 2>&1; then
+        printf '%s\n' "${projects[@]}" | fzf --prompt='Unreal project > ' --exit-0
+        return 0
+      fi
+
+      printf 'ue-projectfiles: multiple .uproject files found in %s, install fzf to pick one\n' "$dir" >&2
+      return 1
+      ;;
+  esac
+}
+
+read_project_engine() {
+  local project_file="$1"
+
+  jq -r '.EngineAssociation // empty' "$project_file"
+}
+
+find_engine_by_association() {
+  local association="$1"
+  local engine_dir version_file major minor patch folder_name
+
+  while IFS= read -r -d '' engine_dir; do
+    version_file="$engine_dir/Engine/Build/Build.version"
+    [[ -f "$version_file" ]] || continue
+
+    major="$(jq -r '.MajorVersion // empty' "$version_file")"
+    minor="$(jq -r '.MinorVersion // empty' "$version_file")"
+    patch="$(jq -r '.PatchVersion // empty' "$version_file")"
+    [[ -n "$major" && -n "$minor" && -n "$patch" ]] || continue
+
+    folder_name="$(basename "$engine_dir")"
+    if [[ "$folder_name" == *"$association"* || "$association" == "$major.$minor.$patch" ]]; then
+      printf '%s\n' "$engine_dir"
+      return 0
+    fi
+  done < <(find "$ENGINES_DIR" -mindepth 1 -maxdepth 1 -type d -print0)
+
+  return 1
+}
+
+choose_engine_interactively() {
+  local engine_dir version_file major minor patch folder_name sort_key
+  local entries=()
+
+  while IFS= read -r -d '' engine_dir; do
+    version_file="$engine_dir/Engine/Build/Build.version"
+    [[ -f "$version_file" ]] || continue
+
+    major="$(jq -r '.MajorVersion // empty' "$version_file")"
+    minor="$(jq -r '.MinorVersion // empty' "$version_file")"
+    patch="$(jq -r '.PatchVersion // empty' "$version_file")"
+    [[ -n "$major" && -n "$minor" && -n "$patch" ]] || continue
+
+    folder_name="$(basename "$engine_dir")"
+    sort_key="$(printf '%03d.%03d.%03d' "$major" "$minor" "$patch")"
+    entries+=("$sort_key|$major.$minor.$patch|$folder_name|$engine_dir")
+  done < <(find "$ENGINES_DIR" -mindepth 1 -maxdepth 1 -type d -print0)
+
+  [[ ${#entries[@]} -gt 0 ]] || return 1
+
+  if ! command -v fzf >/dev/null 2>&1; then
+    printf 'ue-projectfiles: fzf is required to choose an Unreal Engine version\n' >&2
+    return 1
+  fi
+
+  printf '%s\n' "${entries[@]}" | sort -r | while IFS='|' read -r _ version folder_name engine_dir; do
+    printf '%s\t%s\t%s\n' "$version" "$folder_name" "$engine_dir"
+  done | fzf --prompt='Unreal Engine > ' --with-nth=1,2 --delimiter=$'\t' --exit-0 | cut -f3
+}
+
+for arg in "$@"; do
+  case "$arg" in
+    *.uproject)
+      if [[ -n "$PROJECT_FILE" ]]; then
+        printf 'ue-projectfiles: only one .uproject path can be provided\n' >&2
+        exit 1
+      fi
+      PROJECT_FILE="$arg"
+      ;;
+    *)
+      if [[ -z "$PROJECT_FILE" && -d "$arg" ]]; then
+        PROJECT_FILE="$(find_project_file_in_dir "$arg")"
+      else
+        printf 'ue-projectfiles: unrecognized argument: %s\n' "$arg" >&2
+        exit 1
+      fi
+      ;;
+  esac
+done
+
+if [[ -z "$PROJECT_FILE" ]]; then
+  PROJECT_FILE="$(find_project_file_in_dir "$PWD")"
+fi
+
+if [[ -z "$PROJECT_FILE" ]]; then
+  printf 'ue-projectfiles: could not find a .uproject file\n' >&2
+  exit 1
+fi
+
+PROJECT_FILE="$(resolve_path "$PROJECT_FILE")"
+[[ -f "$PROJECT_FILE" ]] || { printf 'ue-projectfiles: project file not found: %s\n' "$PROJECT_FILE" >&2; exit 1; }
+
+if [[ ! -d "$ENGINES_DIR" ]]; then
+  printf 'ue-projectfiles: engines directory not found: %s\n' "$ENGINES_DIR" >&2
+  exit 1
+fi
+
+if ! command -v jq >/dev/null 2>&1; then
+  printf 'ue-projectfiles: jq is required\n' >&2
+  exit 1
+fi
+
+association="$(read_project_engine "$PROJECT_FILE")"
+engine_path=""
+
+if [[ -n "$association" ]]; then
+  if ! engine_path="$(find_engine_by_association "$association")"; then
+    printf 'ue-projectfiles: no engine matched EngineAssociation %s, pick one\n' "$association" >&2
+  fi
+fi
+
+if [[ -z "$engine_path" ]]; then
+  engine_path="$(choose_engine_interactively)"
+fi
+
+[[ -n "$engine_path" ]] || { printf 'ue-projectfiles: no engine selected\n' >&2; exit 1; }
+
+ubt="$engine_path/Binaries/DotNET/UnrealBuildTool/UnrealBuildTool"
+if [[ ! -x "$ubt" ]]; then
+  ubt="$engine_path/Engine/Binaries/DotNET/UnrealBuildTool/UnrealBuildTool"
+fi
+
+if [[ ! -x "$ubt" ]]; then
+  printf 'ue-projectfiles: UnrealBuildTool not found in %s\n' "$engine_path" >&2
+  exit 1
+fi
+
+exec "$ubt" -projectfiles -project="$PROJECT_FILE" -game -engine
