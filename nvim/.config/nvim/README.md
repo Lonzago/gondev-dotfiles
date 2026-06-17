@@ -136,7 +136,7 @@ Disabled in the wrapper config for now:
 
 Note: `neo-tree-unl.nvim` is legacy/archived; the current setup favors `UNX.nvim`.
 
-If you want to roll back quickly, restore `lua/plugins/unreal-plugins.lua.bak` and run `:Lazy`. To disable the bundle temporarily, make the file return `{}`.
+To disable the Unreal bundle temporarily, make `lua/plugins/unreal-plugins.lua` return `{}` and run `:Lazy`.
 
 Health check follow-up:
 - If `:checkhealth UnrealDev` reports a missing UNL scanner, build it in the `UNL.nvim` plugin directory with `cargo build --release --manifest-path scanner/Cargo.toml`.
